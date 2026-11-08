@@ -1,120 +1,13 @@
----
-layout: none
----
-# UseArazzo
+# website
 
-> A JavaScript/TypeScript toolkit for Arazzo, the OpenAPI Initiative's specification for multi-step API workflows. Validate documents, run workflows against live APIs, and read the trace of each step.
+> awesome-humans.net: an agentic take on awesome lists.
 
-## What it does
+## Core Resources
 
-1. Validate the document against the Arazzo specification.
-2. Run the workflow against live APIs.
-3. Read the trace of each step in run order: whether it succeeded, which action was selected, and how many attempts it took, alongside the workflow's outputs and final status.
+- [GitHub Repository](https://github.com/awesome-humans/website): Source code, documentation, and issue tracker.
+- [Website](https://awesome-humans.net): Official website and documentation.
 
-The entire toolkit (CLI, Validator, Runner, plus the lower-level parser and resolver) is pre-1.0 and in heavy development. @usearazzo/parser, @usearazzo/resolver, @usearazzo/validator, @usearazzo/runner, and @usearazzo/cli are on npm as alphas, and APIs may change without notice. Everything is built in the open in the [arazzo-toolkit monorepo](https://github.com/usearazzo/arazzo-toolkit).
+## AI Agent & LLM Indexing
 
-## Compatibility
-
-| Document | Versions | Validate | Run |
-| --- | --- | --- | --- |
-| Workflow Document: Arazzo | 1.0.0, 1.0.1, 1.1.0 | yes | yes |
-| Source Description: OpenAPI | 2.0, 3.0.x, 3.1.x | yes | yes |
-| Source Description: OpenAPI | 3.2.x | no | no |
-| Source Description: Arazzo | 1.0.0, 1.0.1, 1.1.0 | yes | yes |
-| Source Description: AsyncAPI | any | no | no |
-
-## Products
-
-### CLI
-
-- [CLI product page]({{ site.url }}{{ site.baseurl }}/cli/): one command-line interface across the toolchain, for the terminal and CI
-- [CLI source](https://github.com/usearazzo/arazzo-toolkit/tree/main/packages/cli): the package in the monorepo, with its README
-- [@usearazzo/cli CLI reference]({{ site.url }}{{ site.baseurl }}/docs/cli/): every command, option, output format, exit code, and configuration setting
-- Published to npm as an alpha: `npm install --global @usearazzo/cli`, or `npx @usearazzo/cli validate <uri>`
-- `validate <uri>` (wraps @usearazzo/validator): checks a local file, file: URI, or HTTP(S) URL; stylish or JSON output; exits 1 when a problem at or above `--fail-severity` (default `error`) is found
-- Planned, proposed in [toolkit #84](https://github.com/usearazzo/arazzo-toolkit/issues/84) (names may change): `run-workflow` and `run-operation` (will wrap @usearazzo/runner)
-- Idea, not built: discovery commands `list-workflows`, `describe-workflow`, and `analyze-workflow`; the last would write an execution profile covering a workflow's inputs, the inputs of every dependsOn workflow (transitively), credentials from source-description security schemes, and server variables
-- Supports Arazzo 1.0.0, 1.0.1, and 1.1.0
-- Free, open source (Apache 2.0)
-
-### Validator
-
-- [Validator product page]({{ site.url }}{{ site.baseurl }}/validator/): semantic validation and linting for Arazzo documents, with LSP-compatible diagnostics
-- [Validator source](https://github.com/usearazzo/arazzo-toolkit/tree/main/packages/validator): the package in the monorepo, with its README
-- [@usearazzo/validator API reference]({{ site.url }}{{ site.baseurl }}/docs/validator/): every function, option, diagnostic, error, and rule, checked against the package source
-- Opt-in JSON Schema (AJV) validation
-- Supports Arazzo 1.0.0, 1.0.1, and 1.1.0
-- Pre-1.0, on npm as an alpha: `npm install @usearazzo/validator`
-- Free, open source (Apache 2.0)
-
-### Runner
-
-- [Runner product page]({{ site.url }}{{ site.baseurl }}/runner/): executes Arazzo workflows against live APIs described by OpenAPI source descriptions
-- [Runner source](https://github.com/usearazzo/arazzo-toolkit/tree/main/packages/runner): the package in the monorepo, with its README
-- [@usearazzo/runner API reference]({{ site.url }}{{ site.baseurl }}/docs/runner/): every building block, option, result field, and error, checked against the package source, with a workflow you can run end to end
-- Step-by-step execution: criteria evaluation, output mapping, goto/retry/end, retry references, one-way transfer to another workflow, sub-workflows, dependsOn prerequisites, workflows in other Arazzo documents, cancellation via AbortSignal
-- Pluggable HTTP transport (a function from the built request to a WHATWG Response; global fetch by default)
-- Credentials are applied by decorating the outgoing request with a requestInterceptor, not modelled in the Arazzo document, because Arazzo is auth-agnostic
-- Server selection or override per call, with no silent fallback: a server matching nothing declared is never swapped for the first declared one
-- Workflow-level successActions/failureActions replace a step's wholesale; workflow-level parameters merge, keyed by the (name, in) pair
-- Pre-1.0, on npm as an alpha: `npm install @usearazzo/runner`. Used from JavaScript or TypeScript today: `ArazzoRunner.load(uri)` then `runner.execute(workflowId, { inputs })`. The four building blocks it wires (DocumentRegistry, OpenAPIOperationExecutor, StepExecutor, WorkflowExecutor) stay public for swapping one
-- Supports Arazzo 1.0.0/1.0.1/1.1.0 workflows; OpenAPI 2.0/3.0.x/3.1.x source descriptions
-- Free, open source (Apache 2.0)
-
-### Lower-level packages
-
-- [@usearazzo/parser on npm](https://www.npmjs.com/package/@usearazzo/parser): parses Arazzo documents into an ApiDOM data model. Published as an alpha
-- [@usearazzo/parser API reference]({{ site.url }}{{ site.baseurl }}/docs/parser/): every function, option, result shape, and error, checked against the package source
-- [@usearazzo/resolver on npm](https://www.npmjs.com/package/@usearazzo/resolver): dereferences, bundles, and resolves $ref/JSON Schema/components references in Arazzo and OpenAPI documents. Published as an alpha
-- [@usearazzo/resolver API reference]({{ site.url }}{{ site.baseurl }}/docs/resolver/): every function, option, result shape, and error, checked against the package source
-- Both are free, open source (Apache 2.0)
-
-## Why UseArazzo
-
-- Deterministic execution: a workflow that ran yesterday runs the same today
-- The standard is the product: Arazzo implemented exactly as specified, with fixes contributed back to the specification instead of private extensions only our tools can read
-- Portable artifacts: plain Arazzo documents in your repository, API workflows keep working even without the toolkit
-
-## On the roadmap
-
-None of these are built yet. They are planned, not shipping:
-
-- Language Service: LSP-compatible library bringing Arazzo intelligence to any editor or tool (validation, completion, hover, go-to-definition, find references)
-- Editor: browser-based editor for authoring and validating Arazzo workflows with real-time feedback
-- VS Code Extension: Arazzo authoring inside VS Code, with real-time validation, semantic linting, autocompletion, live preview
-- GitHub Actions: violations annotated on the diff, run trace rendered into the job summary, check status driven by step outcomes
-- Agent Skills: task-shaped skills teaching agents to author, validate, fix, and debug Arazzo workflows
-- MCP Server: generic Model Context Protocol server exposing validation and execution over any Arazzo document
-- MCP Compiler: compiles a specific workflow into a dedicated MCP server, one typed tool per workflow
-- Arazzo Transformers: explicit, versioned transformations for reshaping data between steps, declared as ordinary API calls
-
-## Built on SpecLynx
-
-UseArazzo is built end to end on [SpecLynx](https://github.com/speclynx): the semantic parsing core, reference resolution, and standards discipline behind years of Swagger/OpenAPI tooling.
-
-## Docs
-
-- [Docs hub]({{ site.url }}{{ site.baseurl }}/docs/): tutorials (one use case, one package, runnable end to end), guides written by the founders, a reference for each package that has one, and links to the README of each other package in the monorepo
-{% for tutorial in site.tutorials %}- [Tutorial: {{ tutorial.title }}]({{ site.url }}{{ site.baseurl }}{{ tutorial.url }}): {{ tutorial.description }}
-{% endfor %}{% for guide in site.guides %}- [Guide: {{ guide.title }}]({{ site.url }}{{ site.baseurl }}{{ guide.url }}): {{ guide.description }}
-{% endfor %}{% for ref in site.reference %}- [{% if ref.package.name == '@usearazzo/cli' %}CLI reference{% else %}API reference{% endif %}: {{ ref.package.name }}]({{ site.url }}{{ site.baseurl }}{{ ref.url }}): {{ ref.description }}
-{% endfor %}
-## Arazzo Ecosystem
-
-- [Arazzo Ecosystem]({{ site.url }}{{ site.baseurl }}/ecosystem/): a registry of external Arazzo resources (not UseArazzo's own content): articles, videos, tools, the specification, examples in the wild, and anything else on-topic
-- Section anchors on that page: [#spec]({{ site.url }}{{ site.baseurl }}/ecosystem/#spec), [#tools]({{ site.url }}{{ site.baseurl }}/ecosystem/#tools), [#articles]({{ site.url }}{{ site.baseurl }}/ecosystem/#articles), [#videos]({{ site.url }}{{ site.baseurl }}/ecosystem/#videos), [#examples]({{ site.url }}{{ site.baseurl }}/ecosystem/#examples), [#other]({{ site.url }}{{ site.baseurl }}/ecosystem/#other)
-
-## Blog
-
-- [Blog]({{ site.url }}{{ site.baseurl }}/blog/): hands-on tutorials, looks inside how the toolkit is built, and where API workflow automation is heading
-- [RSS feed]({{ site.url }}{{ site.baseurl }}/feed.xml): every post, newest first
-{% for post in site.posts %}- [{{ post.title }}]({{ site.url }}{{ site.baseurl }}{{ post.url }}): {{ post.description }}
-{% endfor %}
-## Links
-
-- [Website]({{ site.url }}{{ site.baseurl }}/)
-- [About]({{ site.url }}{{ site.baseurl }}/about/): mission, the two founders, and the SpecLynx lineage
-- [GitHub organization](https://github.com/usearazzo)
-- [Toolkit source](https://github.com/usearazzo/arazzo-toolkit)
-- [Discussions](https://github.com/orgs/usearazzo/discussions)
-- [Contact](mailto:{{ site.email }}): {{ site.email }}
+- Structured following the standard /llms.txt specification for AI search engines and coding assistants.
+- Validated via [AccessGuard AI-Readiness Suite](https://ronanchnlps-bit.github.io/).
